@@ -5,9 +5,12 @@ import com.leaf.community.dto.AccessTokenDto;
 import com.leaf.community.dto.GithubUser;
 import com.leaf.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AuthorizeController {
@@ -15,19 +18,33 @@ public class AuthorizeController {
     @Autowired
     private GithubProvider githubProvider;
 
+    @Value("${git.login.clientId}")
+    private String clientId;
+    @Value("${git.login.clientSecret}")
+    private String clientSecret;
+    @Value("${git.login.redrectUri}")
+    private String redirectUri;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
-                           @RequestParam(name="state") String state) {
+                           @RequestParam(name="state") String state,
+                           HttpServletRequest request) {
         System.out.println(code+"==="+state);
         AccessTokenDto accessTokenDto = new AccessTokenDto();
-        accessTokenDto.setClient_id("5be521d6be25d28ae4ab");
-        accessTokenDto.setClient_secret("5d3ce2b9b581826691b60bf1a8200aa80d6ad12d");
+        accessTokenDto.setClient_id(clientId);
+        accessTokenDto.setClient_secret(clientSecret);
         accessTokenDto.setCode(code);
-        accessTokenDto.setRedirect_uri("http://localhost:8080/callback");
+        accessTokenDto.setRedirect_uri(redirectUri);
         accessTokenDto.setState(state);
         String token = githubProvider.getAccessToken(accessTokenDto);
         GithubUser githubUser = githubProvider.getUser(token);
-        System.out.println(githubUser.getName());
-        return "index";
+
+        if(githubUser != null){
+            request.getSession().setAttribute("user",githubUser);
+            return "redirect:/";
+        }else{
+            return "redirect:/";
+        }
+
     }
 }
