@@ -1,4 +1,4 @@
-package com.leaf.community.dto;
+package com.leaf.community.model;
 
 import lombok.Data;
 

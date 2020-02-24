@@ -1,10 +1,9 @@
 package com.leaf.community.controller;
 
-import com.leaf.community.dto.Question;
-import com.leaf.community.dto.User;
+import com.leaf.community.model.Question;
+import com.leaf.community.model.User;
 import com.leaf.community.mapper.QuestionMapper;
 import com.leaf.community.mapper.UserMapper;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
